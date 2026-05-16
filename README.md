@@ -3,6 +3,10 @@
 Automação inteligente que classifica tickets de suporte automaticamente 
 usando n8n + Groq (LLaMA 3.3) + Airtable.
 
+## 📸 Fluxo de Automação
+
+![Workflow](workflow-screenshot.png)
+
 ## 🎯 O que faz
 
 - Recebe tickets via formulário web
