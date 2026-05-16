@@ -1,31 +1,31 @@
-# 🎫 Sistema de Classificação Automática de Tickets com IA
+# Sistema de Classificação Automática de Tickets com IA
 
 Automação inteligente que classifica tickets de suporte automaticamente 
 usando n8n + Groq (LLaMA 3.3) + Airtable.
 
-## 📸 Fluxo de Automação
+## Fluxo de Automação
 
 ![Workflow](workflow-screenshot.png)
 
-## 🎯 O que faz
+## O que faz
 
 - Recebe tickets via formulário web
 - Classifica automaticamente por **categoria**, **prioridade** e **sentimento**
 - Salva os resultados organizados no Airtable em tempo real
 - Totalmente gratuito (Groq API + Airtable free tier)
 
-## 🔄 Fluxo
+## Fluxo
 
 Formulário → n8n → Groq API (LLaMA 3.3) → Airtable
 
-## 🛠️ Stack
+## Stack
 
 - **n8n** — orquestração do fluxo
 - **Groq API** — classificação via LLM (gratuito)
 - **Airtable** — armazenamento dos tickets
 - **JavaScript** — integração via HTTP Request
 
-## 📋 Categorias classificadas
+## Categorias classificadas
 
 | Campo | Opções |
 |---|---|
@@ -33,7 +33,7 @@ Formulário → n8n → Groq API (LLaMA 3.3) → Airtable
 | Prioridade | Baixa, Média, Alta, Crítica |
 | Sentimento | Neutro, Frustrado, Satisfeito, Urgente |
 
-## 🚀 Como rodar localmente
+## Como rodar localmente
 
 1. Clone o repositório
 2. Instale o n8n: `npm install -g n8n`
@@ -47,7 +47,7 @@ $env:NODE_FUNCTION_ALLOW_BUILTIN="https,http"; npx n8n
    - Airtable Token em `Credentials > Airtable`
 6. Publique o workflow e acesse a URL do formulário
 
-## ⚙️ Variáveis necessárias
+## Variáveis necessárias
 
 | Variável | Onde obter |
 |---|---|
@@ -55,7 +55,7 @@ $env:NODE_FUNCTION_ALLOW_BUILTIN="https,http"; npx n8n
 | Airtable Token | airtable.com/create/tokens |
 | Airtable Base ID | URL da sua base |
 
-## 🔮 Melhorias planejadas
+## Melhorias planejadas
 
 - [ ] Notificação por email para tickets críticos
 - [ ] Dashboard de analytics
