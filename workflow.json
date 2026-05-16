@@ -43,7 +43,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const descricao = $input.first().json[\"Descrição do Problema\"];\nconst nome = $input.first().json[\"Nome\"];\nconst email = $input.first().json[\"Email\"];\nconst chave = \"YOUR_GROQ_API_KEY\";\nconst https = require('https');\n\nconst timestamp = Date.now();\nconst numeroTicket = \"TKT-\" + timestamp.toString().slice(-6);\n\ntry {\n  const bodyStr = JSON.stringify({\n    model: \"llama-3.3-70b-versatile\",\n    messages: [\n      { role: \"system\", content: \"Classifique o ticket e retorne APENAS JSON neste formato exato: {\\\"categoria\\\": \\\"Bug\\\", \\\"prioridade\\\": \\\"Alta\\\", \\\"sentimento\\\": \\\"Frustrado\\\", \\\"resumo\\\": \\\"frase curta\\\"}. Categorias: Bug, Duvida, Financeiro, Acesso, Outro. Prioridades: Baixa, Media, Alta, Critica. Sentimentos: Neutro, Frustrado, Satisfeito, Urgente.\" },\n      { role: \"user\", content: descricao }\n    ]\n  });\n\n  const data = await new Promise((resolve, reject) => {\n    const options = {\n      hostname: \"api.groq.com\",\n      path: \"/openai/v1/chat/completions\",\n      method: \"POST\",\n      headers: {\n        \"Content-Type\": \"application/json\",\n        \"Authorization\": \"Bearer \" + chave,\n        \"Content-Length\": Buffer.byteLength(bodyStr)\n      }\n    };\n    const req = https.request(options, (res) => {\n      let raw = \"\";\n      res.on(\"data\", (chunk) => { raw += chunk; });\n      res.on(\"end\", () => { resolve(JSON.parse(raw)); });\n    });\n    req.on(\"error\", reject);\n    req.write(bodyStr);\n    req.end();\n  });\n\n  const classificacao = JSON.parse(data.choices[0].message.content);\n\n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: classificacao.categoria,\n    Prioridade: classificacao.prioridade,\n    Sentimento: classificacao.sentimento,\n    Resumo: classificacao.resumo,\n    Data: new Date().toISOString().split('T')[0]\n  }}];\n\n} catch (erro) {\n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: \"Não classificado\",\n    Prioridade: \"Média\",\n    Sentimento: \"Neutro\",\n    Resumo: \"Erro na classificação automática — revisar manualmente\",\n    Data: new Date().toISOString().split('T')[0],\n    Erro: erro.message\n  }}];\n}"
+        "jsCode": "const descricao = $input.first().json[\"Descrição do Problema\"];\nconst nome = $input.first().json[\"Nome\"];\nconst email = $input.first().json[\"Email\"];\nconst chave = \"YOUR_GROQ_API_KEY\";\nconst https = require('https');\n\nconst timestamp = Date.now();\nconst numeroTicket = \"TKT-\" + timestamp.toString().slice(-6);\n\ntry {\n  const bodyStr = JSON.stringify({\n    model: \"llama-3.3-70b-versatile\",\n    messages: [\n      { role: \"system\", content: \"Classifique o ticket e retorne APENAS JSON neste formato exato: {\\\"categoria\\\": \\\"Bug\\\", \\\"prioridade\\\": \\\"Alta\\\", \\\"sentimento\\\": \\\"Frustrado\\\", \\\"resumo\\\": \\\"frase curta\\\"}. Categorias: Bug, Duvida, Financeiro, Acesso, Outro. Prioridades: Baixa, Media, Alta, Critica. Sentimentos: Neutro, Frustrado, Satisfeito, Urgente.\" },\n      { role: \"user\", content: descricao }\n    ]\n  });\n\n  const data = await new Promise((resolve, reject) => {\n    const options = {\n      hostname: \"api.groq.com\",\n      path: \"/openai/v1/chat/completions\",\n      method: \"POST\",\n      headers: {\n        \"Content-Type\": \"application/json\",\n        \"Authorization\": \"Bearer \" + chave,\n        \"Content-Length\": Buffer.byteLength(bodyStr)\n      }\n    };\n    const req = https.request(options, (res) => {\n      let raw = \"\";\n      res.on(\"data\", (chunk) => { raw += chunk; });\n      res.on(\"end\", () => { resolve(JSON.parse(raw)); });\n    });\n    req.on(\"error\", reject);\n    req.write(bodyStr);\n    req.end();\n  });\n\n  const classificacao = JSON.parse(data.choices[0].message.content);\n\n  const tempoResposta = {\n  \"Critica\": \"1 hora\",\n  \"Alta\": \"4 horas\",\n  \"Media\": \"24 horas\",\n  \"Baixa\": \"72 horas\"\n};\n\nconst sla = tempoResposta[classificacao.prioridade] || \"48 horas\";\n  \n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: classificacao.categoria,\n    Prioridade: classificacao.prioridade,\n    Sentimento: classificacao.sentimento,\n    Resumo: classificacao.resumo,\n    Data: new Date().toISOString().split('T')[0],\n    SLA: sla,\n  }}];\n\n} catch (erro) {\n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: \"Não classificado\",\n    Prioridade: \"Média\",\n    Sentimento: \"Neutro\",\n    Resumo: \"Erro na classificação automática — revisar manualmente\",\n    Data: new Date().toISOString().split('T')[0],\n    SLA: sla, \n    Erro: erro.message\n  }}];\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -159,6 +159,17 @@
               "type": "dateTime",
               "readOnly": false,
               "removed": false
+            },
+            {
+              "id": "SLA",
+              "displayName": "SLA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -223,7 +234,7 @@
         "toEmail": "asaph.gomes447@gmail.com",
         "subject": "=Ticket Crítico - {{ $json.Ticket }}",
         "contentType": "text/html",
-        "contentValue": "=<h2>Ticket Crítico Detectado</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Categoria:</strong> {{ $json.fields.Categoria }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>Sentimento:</strong> {{ $json.fields.Sentimento }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <hr> <p style=\"color: red;\">Este ticket requer atenção imediata!</p>",
+        "contentValue": "=<h2>Ticket Crítico Detectado</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Categoria:</strong> {{ $json.fields.Categoria }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>Sentimento:</strong> {{ $json.fields.Sentimento }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <p><strong>Tempo de Resposta Esperado:</strong> {{ $json.fields.SLA }}</p><hr> <p style=\"color: red;\">Este ticket requer atenção imediata!</p>",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.sendGrid",
@@ -294,7 +305,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "2a00c35a-9893-4a92-ae3a-81da2e38ce9f",
+  "versionId": "4d4c86bd-f02c-4cda-b0f1-1fa7997e4324",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "6517e0c124deda5d86e33f210955cd223347cf2be14a6ba012adae077880cde7"
