@@ -34,8 +34,8 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.5,
       "position": [
-        0,
-        0
+        -16,
+        -48
       ],
       "id": "64ab1a28-7fb0-4ee9-80d2-6ae9814cf210",
       "name": "On form submission",
@@ -49,7 +49,7 @@
       "typeVersion": 2,
       "position": [
         208,
-        0
+        -48
       ],
       "id": "9eca2019-d0a6-4b75-a526-112413312e26",
       "name": "Code in JavaScript"
@@ -180,8 +180,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        416,
-        0
+        432,
+        -48
       ],
       "id": "96a1df11-329c-4d7d-8cde-2d5390b6d123",
       "name": "Create a record",
@@ -194,37 +194,244 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
+        "rules": {
+          "values": [
             {
-              "id": "cefdcea3-1b0b-4073-8e06-52d786f2c271",
-              "leftValue": "={{ $json.fields.Prioridade }}",
-              "rightValue": "Critica",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.fields.Categoria }}",
+                    "rightValue": "Bug",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "942a1aad-5cfd-4a3f-a3ea-517c645f5792"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Equipe Dev"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "32f58d1a-0adb-497e-b0b5-03fa38c855a2",
+                    "leftValue": "={{ $json.fields.Categoria }}",
+                    "rightValue": "Financeiro",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Equipe Financeiro"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f333c4bd-cca9-4159-901c-2464ed68fab3",
+                    "leftValue": "={{ $json.fields.Categoria }}",
+                    "rightValue": "Acesso",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Equipe TI"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cc08b78f-77b4-4032-b70f-c7b72ae56fee",
+                    "leftValue": "={{ $json.fields.Categoria }}",
+                    "rightValue": "Outro",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Fila Geral"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f514a875-988e-4ddb-991a-a59cd2dbd6c5",
+                    "leftValue": "={{ $json.fields.Categoria }}",
+                    "rightValue": "Duvida",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Fila Geral"
             }
-          ],
-          "combinator": "or"
+          ]
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
       "position": [
-        624,
-        0
+        1104,
+        -96
       ],
-      "id": "5a7c872f-6a99-4862-a022-bb97fd0f6eb0",
-      "name": "If"
+      "id": "c9466618-08fe-49c7-a1c4-0fa3b75f9c3e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "asaph.gomes447@gmail.com",
+        "toEmail": "asaph.gomes447@gmail.com",
+        "subject": "=Problema Financeiro - {{ $json.fields.Ticket }}",
+        "contentType": "text/html",
+        "contentValue": "=<h2>Problema Financeiro</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>SLA:</strong> {{ $json.fields.SLA }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <hr> <p style=\"color: #f39c12;\">Encaminhe para a equipe financeira.</p>",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        -240
+      ],
+      "id": "99cc1689-af0f-4275-88ee-b3b43104129c",
+      "name": "Send an email (Financeiro)",
+      "credentials": {
+        "sendGridApi": {
+          "id": "Y4USGcqUEqrJyRM7",
+          "name": "SendGrid account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "asaph.gomes447@gmail.com",
+        "toEmail": "asaph.gomes447@gmail.com",
+        "subject": "=Problema de Acesso - {{ $json.fields.Ticket }}",
+        "contentType": "text/html",
+        "contentValue": "=<h2>Problema de Acesso</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>SLA:</strong> {{ $json.fields.SLA }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <hr> <p style=\"color: #3498db;\">Encaminhe para a equipe de TI.</p>",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        -48
+      ],
+      "id": "6070f3d9-0463-40d8-b437-929ba88f7add",
+      "name": "Send an email (Acesso)",
+      "credentials": {
+        "sendGridApi": {
+          "id": "Y4USGcqUEqrJyRM7",
+          "name": "SendGrid account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "asaph.gomes447@gmail.com",
+        "toEmail": "asaph.gomes447@gmail.com",
+        "subject": "=Novo Ticket - {{ $json.fields.Ticket }}",
+        "contentType": "text/html",
+        "contentValue": "=<h2>Novo Ticket</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>SLA:</strong> {{ $json.fields.SLA }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <hr> <p style=\"color: #95a5a6;\">Ticket adicionado à fila geral de atendimento.</p>",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        144
+      ],
+      "id": "26b9f096-c733-4888-b60c-bc344b53842f",
+      "name": "Send an email (Fila Geral)",
+      "credentials": {
+        "sendGridApi": {
+          "id": "Y4USGcqUEqrJyRM7",
+          "name": "SendGrid account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "asaph.gomes447@gmail.com",
+        "toEmail": "asaph.gomes447@gmail.com",
+        "subject": "=Novo Ticket - {{ $json.fields.Ticket }}",
+        "contentType": "text/html",
+        "contentValue": "=<h2>Novo Ticket</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>SLA:</strong> {{ $json.fields.SLA }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <hr> <p style=\"color: #95a5a6;\">Ticket adicionado à fila geral de atendimento.</p>",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        336
+      ],
+      "id": "74bd1d93-7696-4c78-ac42-d661f5dc1b09",
+      "name": "Send an email (Fila Geral)1",
+      "credentials": {
+        "sendGridApi": {
+          "id": "Y4USGcqUEqrJyRM7",
+          "name": "SendGrid account"
+        }
+      }
     },
     {
       "parameters": {
@@ -240,11 +447,70 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        832,
-        -96
+        880,
+        -112
       ],
       "id": "ee654881-8246-41f1-91c0-d436914bf680",
-      "name": "Send an email",
+      "name": "Send an email (Critico)",
+      "credentials": {
+        "sendGridApi": {
+          "id": "Y4USGcqUEqrJyRM7",
+          "name": "SendGrid account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b2b680fa-422d-4791-b696-10427ba77880",
+              "leftValue": "={{ $json.fields.Prioridade }}",
+              "rightValue": "Critica",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        656,
+        -48
+      ],
+      "id": "2756907f-d3c0-4298-b662-95c203801c17",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "asaph.gomes447@gmail.com",
+        "toEmail": "asaph.gomes447@gmail.com",
+        "subject": "=Bug Reportado - {{ $json.fields.Ticket }}",
+        "contentType": "text/html",
+        "contentValue": "=<h2>Novo Bug Reportado</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>SLA:</strong> {{ $json.fields.SLA }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <hr> <p style=\"color: #e74c3c;\">Encaminhe para a equipe de desenvolvimento.</p>",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        -432
+      ],
+      "id": "4aeaa8b2-a66d-4fc2-bf5d-fab46c0ed56c",
+      "name": "Send an email (Bug)",
       "credentials": {
         "sendGridApi": {
           "id": "Y4USGcqUEqrJyRM7",
@@ -288,11 +554,77 @@
         ]
       ]
     },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send an email (Bug)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an email (Financeiro)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an email (Acesso)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an email (Fila Geral)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an email (Fila Geral)1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
     "If": {
       "main": [
         [
           {
-            "node": "Send an email",
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an email (Critico)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an email (Critico)": {
+      "main": [
+        [
+          {
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -305,7 +637,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "4d4c86bd-f02c-4cda-b0f1-1fa7997e4324",
+  "versionId": "b3c44efb-083e-4ea5-a6fe-26ee27ce9381",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "6517e0c124deda5d86e33f210955cd223347cf2be14a6ba012adae077880cde7"
