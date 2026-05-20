@@ -101,4 +101,3 @@ $env:NODE_FUNCTION_ALLOW_BUILTIN="https,http"; npx n8n
 - [x] Alertas Telegram em tempo real
 - [ ] Relatório semanal automático
 - [ ] Bot interativo de consulta de tickets
-- [ ] Segundo projeto no portfólio
