@@ -34,7 +34,7 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.5,
       "position": [
-        -16,
+        -32,
         176
       ],
       "id": "64ab1a28-7fb0-4ee9-80d2-6ae9814cf210",
@@ -48,7 +48,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        208,
+        192,
         176
       ],
       "id": "9eca2019-d0a6-4b75-a526-112413312e26",
@@ -180,7 +180,7 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        432,
+        416,
         176
       ],
       "id": "96a1df11-329c-4d7d-8cde-2d5390b6d123",
@@ -327,7 +327,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1552,
+        1536,
         128
       ],
       "id": "c9466618-08fe-49c7-a1c4-0fa3b75f9c3e",
@@ -346,7 +346,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1776,
+        1760,
         -16
       ],
       "id": "99cc1689-af0f-4275-88ee-b3b43104129c",
@@ -371,7 +371,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1776,
+        1760,
         176
       ],
       "id": "6070f3d9-0463-40d8-b437-929ba88f7add",
@@ -396,7 +396,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1776,
+        1760,
         368
       ],
       "id": "26b9f096-c733-4888-b60c-bc344b53842f",
@@ -421,7 +421,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1776,
+        1760,
         560
       ],
       "id": "74bd1d93-7696-4c78-ac42-d661f5dc1b09",
@@ -447,7 +447,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        880,
+        864,
         176
       ],
       "id": "ee654881-8246-41f1-91c0-d436914bf680",
@@ -487,7 +487,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        656,
+        640,
         176
       ],
       "id": "2756907f-d3c0-4298-b662-95c203801c17",
@@ -506,7 +506,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1776,
+        1760,
         -208
       ],
       "id": "4aeaa8b2-a66d-4fc2-bf5d-fab46c0ed56c",
@@ -529,7 +529,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1328,
+        1312,
         32
       ],
       "id": "4134f729-4a02-4ec0-a4fb-1938ba32116f",
@@ -553,7 +553,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2000,
+        1984,
         224
       ],
       "id": "23c64ab2-515b-4024-8cdd-874c03b9c8c3",
@@ -575,11 +575,351 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1104,
+        1088,
         32
       ],
       "id": "86a390c4-b178-46b0-b678-87cf837fd253",
       "name": "Merge"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        384
+      ],
+      "id": "1ede916d-22e6-4036-ba3f-df0e7cfcfa8b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appE170YBQASeSIlB",
+          "mode": "list",
+          "cachedResultName": "Tickets de Suporte",
+          "cachedResultUrl": "https://airtable.com/appE170YBQASeSIlB"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl8MPVty40q3UdOZ",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appE170YBQASeSIlB/tbl8MPVty40q3UdOZ"
+        },
+        "filterByFormula": "IS_AFTER({Data}, DATEADD(TODAY(), -7, 'days'))",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        384
+      ],
+      "id": "57268fcb-5a3e-490b-bf19-713840f0b17a",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9gZBE4PQBungeyOQ",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tickets = $input.all();\nconst total = tickets.length;\n\n// Contagem por categoria\nconst porCategoria = {};\nconst porPrioridade = {};\nconst porSentimento = {};\nlet criticos = 0;\n\nfor (const t of tickets) {\n  const f = t.json.fields;\n  \n  porCategoria[f.Categoria] = (porCategoria[f.Categoria] || 0) + 1;\n  porPrioridade[f.Prioridade] = (porPrioridade[f.Prioridade] || 0) + 1;\n  porSentimento[f.Sentimento] = (porSentimento[f.Sentimento] || 0) + 1;\n  \n  if (f.Prioridade === 'Critica') criticos++;\n}\n\n// Monta linhas HTML por categoria\nconst linhasCategoria = Object.entries(porCategoria)\n  .map(([cat, qtd]) => `\n    <tr>\n      <td style=\"padding:8px;border-bottom:1px solid #eee\">${cat}</td>\n      <td style=\"padding:8px;border-bottom:1px solid #eee;text-align:center\">${qtd}</td>\n      <td style=\"padding:8px;border-bottom:1px solid #eee;text-align:center\">\n        ${Math.round((qtd/total)*100)}%\n      </td>\n    </tr>`\n  ).join('');\n\nconst linhasPrioridade = Object.entries(porPrioridade)\n  .map(([pri, qtd]) => `\n    <tr>\n      <td style=\"padding:8px;border-bottom:1px solid #eee\">${pri}</td>\n      <td style=\"padding:8px;border-bottom:1px solid #eee;text-align:center\">${qtd}</td>\n    </tr>`\n  ).join('');\n\n// Data da semana\nconst hoje = new Date();\nconst seteDias = new Date(hoje - 7*24*60*60*1000);\nconst periodo = `${seteDias.toLocaleDateString('pt-BR')} a ${hoje.toLocaleDateString('pt-BR')}`;\n\nreturn [{\n  json: {\n    total,\n    criticos,\n    porCategoria,\n    porPrioridade,\n    porSentimento,\n    linhasCategoria,\n    linhasPrioridade,\n    periodo\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        384
+      ],
+      "id": "f53a16ff-3139-4597-9fd5-416687f78c67",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "asaph.gomes447@gmail.com",
+        "toEmail": "asaph.gomes447@gmail.com",
+        "subject": "=📊 Relatório Semanal de Tickets — {{ $json.periodo }}",
+        "contentType": "text/html",
+        "contentValue": "=<div style=\"font-family:Arial,sans-serif;max-width:600px;margin:0 auto\">      <div style=\"background:#1a1a2e;color:white;padding:24px;border-radius:8px 8px 0 0\">     <h1 style=\"margin:0;font-size:22px\">📊 Relatório Semanal de Tickets</h1>     <p style=\"margin:8px 0 0;opacity:0.7\">{{ $json.periodo }}</p>   </div>    <div style=\"background:#f8f9fa;padding:24px\">      <!-- Cards de resumo -->     <div style=\"display:flex;gap:16px;margin-bottom:24px\">       <div style=\"background:white;padding:16px;border-radius:8px;flex:1;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.1)\">         <div style=\"font-size:32px;font-weight:bold;color:#1a1a2e\">{{ $json.total }}</div>         <div style=\"color:#666;font-size:13px\">Total de Tickets</div>       </div>       <div style=\"background:white;padding:16px;border-radius:8px;flex:1;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.1)\">         <div style=\"font-size:32px;font-weight:bold;color:#e63946\">{{ $json.criticos }}</div>         <div style=\"color:#666;font-size:13px\">Tickets Críticos</div>       </div>     </div>      <!-- Por categoria -->     <div style=\"background:white;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.1)\">       <h3 style=\"margin:0 0 12px;color:#1a1a2e\">📂 Por Categoria</h3>       <table style=\"width:100%;border-collapse:collapse\">         <thead>           <tr style=\"background:#f0f0f0\">             <th style=\"padding:8px;text-align:left\">Categoria</th>             <th style=\"padding:8px;text-align:center\">Qtd</th>             <th style=\"padding:8px;text-align:center\">%</th>           </tr>         </thead>         <tbody>           {{ $json.linhasCategoria }}         </tbody>       </table>     </div>      <!-- Por prioridade -->     <div style=\"background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.1)\">       <h3 style=\"margin:0 0 12px;color:#1a1a2e\">⚡ Por Prioridade</h3>       <table style=\"width:100%;border-collapse:collapse\">         <thead>           <tr style=\"background:#f0f0f0\">             <th style=\"padding:8px;text-align:left\">Prioridade</th>             <th style=\"padding:8px;text-align:center\">Qtd</th>           </tr>         </thead>         <tbody>           {{ $json.linhasPrioridade }}         </tbody>       </table>     </div>    </div>    <div style=\"background:#1a1a2e;color:white;padding:16px;border-radius:0 0 8px 8px;text-align:center\">     <p style=\"margin:0;font-size:12px;opacity:0.6\">       Gerado automaticamente por TicketBot • n8n + Groq AI     </p>   </div>  </div>",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [
+        640,
+        384
+      ],
+      "id": "e53dc0ee-2da7-40b6-832e-2fd86183e2ef",
+      "name": "Send an email",
+      "credentials": {
+        "sendGridApi": {
+          "id": "Y4USGcqUEqrJyRM7",
+          "name": "SendGrid account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        784
+      ],
+      "id": "826fb9ee-cb35-463f-9967-9d2f752ddf27",
+      "name": "Telegram Trigger",
+      "webhookId": "ba56464f-89da-46f8-8250-91ca79cc748c",
+      "credentials": {
+        "telegramApi": {
+          "id": "pnLAq4lqAB78rfmf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const message = $input.first().json.message;\nconst texto = message?.text || \"\";\nconst chatId = message?.chat?.id;\nconst partes = texto.trim().split(\" \");\nconst comando = partes[0].toLowerCase();\nconst argumento = partes[1] || \"\";\n\nreturn [{\n  json: {\n    comando,\n    argumento,\n    chatId,\n    textoOriginal: texto\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        784
+      ],
+      "id": "c9897217-02c2-4aec-9475-8b93dae2934b",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.comando }}",
+                    "rightValue": "/status",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a245d8c4-808b-4b99-9d6e-b61991d69aa7"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "/status"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f8a5facb-05e1-44fa-b4b6-b37881f643aa",
+                    "leftValue": "={{ $json.comando }}",
+                    "rightValue": "/ajuda",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "/ajuda"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "869c10d8-a40d-4c10-b7ee-32d2e86996ba",
+                    "leftValue": "={{ $json.comando }}",
+                    "rightValue": "/novo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "/novo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        768
+      ],
+      "id": "fa553078-c75b-41d8-b027-cef2655d6208",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appE170YBQASeSIlB",
+          "mode": "list",
+          "cachedResultName": "Tickets de Suporte",
+          "cachedResultUrl": "https://airtable.com/appE170YBQASeSIlB"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl8MPVty40q3UdOZ",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appE170YBQASeSIlB/tbl8MPVty40q3UdOZ"
+        },
+        "filterByFormula": "={Ticket} = '{{ $json.argumento }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        592
+      ],
+      "id": "31b17364-10b8-47ed-a560-00eabb5ec02a",
+      "name": "Search records1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9gZBE4PQBungeyOQ",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tickets = $input.all();\nconst chatId = $('Code in JavaScript2').first().json.chatId;\n\nif (tickets.length === 0) {\n  return [{ json: {\n    chatId,\n    texto: \"❌ Ticket não encontrado. Verifique o número e tente novamente.\"\n  }}];\n}\n\nconst t = tickets[0].json.fields;\nreturn [{ json: {\n  chatId,\n  texto: `🎫 *${t.Ticket}*\\n` +\n         `👤 ${t.Nome}\\n` +\n         `📂 Categoria: ${t.Categoria}\\n` +\n         `⚡ Prioridade: ${t.Prioridade}\\n` +\n         `⏱ SLA: ${t.SLA}\\n` +\n         `📝 ${t.Resumo}\\n` +\n         `😤 Sentimento: ${t.Sentimento}\\n` +\n         `📅 Data: ${t.Data}`\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        592
+      ],
+      "id": "cb4ec71b-34d7-4485-bd25-f9b09d86ea68",
+      "name": "Code in JavaScript (resposta)"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.texto }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1072,
+        592
+      ],
+      "id": "71cbd5a4-d34e-4494-8a7c-59663eaf9c05",
+      "name": "Send a text message",
+      "webhookId": "96453d13-a4b8-4f62-9509-7cc967e05f79",
+      "credentials": {
+        "telegramApi": {
+          "id": "pnLAq4lqAB78rfmf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Code in JavaScript2').first().json.chatId }}",
+        "text": "🤖 *Comandos disponíveis*  /status TKT-XXXXXX — consulta um ticket /novo — abre um novo ticket /ajuda — mostra esta mensagem",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        784
+      ],
+      "id": "8378283d-eaea-4bc9-9412-73884e4ed7ba",
+      "name": "Send a text message1",
+      "webhookId": "f312f87e-3e96-495b-ae76-a61606b3796d",
+      "credentials": {
+        "telegramApi": {
+          "id": "pnLAq4lqAB78rfmf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Code in JavaScript2').first().json.chatId }}",
+        "text": "📋 *Abrir novo ticket*  Acesse o formulário pelo link: http://localhost:5678/form/bf540481-5a9e-458d-922f-803b18d33740",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        976
+      ],
+      "id": "c40f219b-e621-47f2-b073-35e434f5c6c6",
+      "name": "Send a text message2",
+      "webhookId": "cb8049de-6c29-4f74-b33c-64f0a7a48dec",
+      "credentials": {
+        "telegramApi": {
+          "id": "pnLAq4lqAB78rfmf",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -780,6 +1120,108 @@
       "main": [
         []
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Send an email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript (resposta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript (resposta)": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Search records1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -787,7 +1229,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "95d308b4-12a9-4688-b74a-196e46326e8a",
+  "versionId": "f2265c0b-5264-48d7-a0ee-6a795d49a08f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "6517e0c124deda5d86e33f210955cd223347cf2be14a6ba012adae077880cde7"
