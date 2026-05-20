@@ -35,7 +35,7 @@
       "typeVersion": 2.5,
       "position": [
         -16,
-        -48
+        176
       ],
       "id": "64ab1a28-7fb0-4ee9-80d2-6ae9814cf210",
       "name": "On form submission",
@@ -49,7 +49,7 @@
       "typeVersion": 2,
       "position": [
         208,
-        -48
+        176
       ],
       "id": "9eca2019-d0a6-4b75-a526-112413312e26",
       "name": "Code in JavaScript"
@@ -181,7 +181,7 @@
       "typeVersion": 2.2,
       "position": [
         432,
-        -48
+        176
       ],
       "id": "96a1df11-329c-4d7d-8cde-2d5390b6d123",
       "name": "Create a record",
@@ -327,8 +327,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1104,
-        -96
+        1552,
+        128
       ],
       "id": "c9466618-08fe-49c7-a1c4-0fa3b75f9c3e",
       "name": "Switch"
@@ -346,8 +346,8 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1328,
-        -240
+        1776,
+        -16
       ],
       "id": "99cc1689-af0f-4275-88ee-b3b43104129c",
       "name": "Send an email (Financeiro)",
@@ -371,8 +371,8 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1328,
-        -48
+        1776,
+        176
       ],
       "id": "6070f3d9-0463-40d8-b437-929ba88f7add",
       "name": "Send an email (Acesso)",
@@ -396,8 +396,8 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1328,
-        144
+        1776,
+        368
       ],
       "id": "26b9f096-c733-4888-b60c-bc344b53842f",
       "name": "Send an email (Fila Geral)",
@@ -421,8 +421,8 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1328,
-        336
+        1776,
+        560
       ],
       "id": "74bd1d93-7696-4c78-ac42-d661f5dc1b09",
       "name": "Send an email (Fila Geral)1",
@@ -439,7 +439,7 @@
         "fromEmail": "asaph.gomes447@gmail.com",
         "fromName": "Asaph",
         "toEmail": "asaph.gomes447@gmail.com",
-        "subject": "=Ticket Crítico - {{ $json.Ticket }}",
+        "subject": "=Ticket Crítico - {{ $json.fields.Ticket }}",
         "contentType": "text/html",
         "contentValue": "=<h2>Ticket Crítico Detectado</h2> <p><strong>Ticket:</strong> {{ $json.fields.Ticket }}</p> <p><strong>Nome:</strong> {{ $json.fields.Nome }}</p> <p><strong>Email:</strong> {{ $json.fields.Email }}</p> <p><strong>Categoria:</strong> {{ $json.fields.Categoria }}</p> <p><strong>Prioridade:</strong> {{ $json.fields.Prioridade }}</p> <p><strong>Sentimento:</strong> {{ $json.fields.Sentimento }}</p> <p><strong>Resumo:</strong> {{ $json.fields.Resumo }}</p> <p><strong>Data:</strong> {{ $json.fields.Data }}</p> <p><strong>Tempo de Resposta Esperado:</strong> {{ $json.fields.SLA }}</p><hr> <p style=\"color: red;\">Este ticket requer atenção imediata!</p>",
         "additionalFields": {}
@@ -448,7 +448,7 @@
       "typeVersion": 1,
       "position": [
         880,
-        -112
+        176
       ],
       "id": "ee654881-8246-41f1-91c0-d436914bf680",
       "name": "Send an email (Critico)",
@@ -488,7 +488,7 @@
       "typeVersion": 2.3,
       "position": [
         656,
-        -48
+        176
       ],
       "id": "2756907f-d3c0-4298-b662-95c203801c17",
       "name": "If"
@@ -506,8 +506,8 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1328,
-        -432
+        1776,
+        -208
       ],
       "id": "4aeaa8b2-a66d-4fc2-bf5d-fab46c0ed56c",
       "name": "Send an email (Bug)",
@@ -517,6 +517,69 @@
           "name": "SendGrid account"
         }
       }
+    },
+    {
+      "parameters": {
+        "chatId": "-5163840937",
+        "text": "=🚨 *TICKET CRÍTICO*\n━━━━━━━━━━━━━━━\n🎫 *{{ $json.fields.Ticket }}*\n👤 {{ $json.fields.Nome }}\n📂 Categoria: {{ $json.fields.Categoria }}\n⚡ Prioridade: {{ $json.fields.Prioridade }}\n⏱ SLA: {{ $json.fields.SLA }}\n📝 {{ $json.fields.Resumo }}\n😤 Sentimento: {{ $json.fields.Sentimento }}\n━━━━━━━━━━━━━━━\n⚠️ Requer atenção imediata!",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1328,
+        32
+      ],
+      "id": "4134f729-4a02-4ec0-a4fb-1938ba32116f",
+      "name": "Send a text message (Critica)",
+      "webhookId": "ac4eea28-c18f-4850-8972-d21acff30892",
+      "credentials": {
+        "telegramApi": {
+          "id": "pnLAq4lqAB78rfmf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-5028215417",
+        "text": "=📋 *Novo Ticket*\n━━━━━━━━━━━━━━━\n🎫 *{{ $('Switch').item.json.fields.Ticket }}*\n👤 {{ $('Switch').item.json.fields.Nome }}\n📂 Categoria: {{ $('Switch').item.json.fields.Categoria }}\n⚡ Prioridade: {{ $('Switch').item.json.fields.Prioridade }}\n⏱ SLA: {{ $('Switch').item.json.fields.SLA }}\n📝 {{ $('Switch').item.json.fields.Resumo }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        224
+      ],
+      "id": "23c64ab2-515b-4024-8cdd-874c03b9c8c3",
+      "name": "Send a text message (Normal)",
+      "webhookId": "ac4eea28-c18f-4850-8972-d21acff30892",
+      "credentials": {
+        "telegramApi": {
+          "id": "pnLAq4lqAB78rfmf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1104,
+        32
+      ],
+      "id": "86a390c4-b178-46b0-b678-87cf837fd253",
+      "name": "Merge"
     }
   ],
   "pinData": {},
@@ -601,14 +664,14 @@
       "main": [
         [
           {
-            "node": "Switch",
+            "node": "Send an email (Critico)",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Send an email (Critico)",
+            "node": "Merge",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ],
         [
@@ -627,8 +690,95 @@
             "node": "Switch",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
           }
         ]
+      ]
+    },
+    "Send an email (Bug)": {
+      "main": [
+        [
+          {
+            "node": "Send a text message (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message (Critica)": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an email (Acesso)": {
+      "main": [
+        [
+          {
+            "node": "Send a text message (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an email (Financeiro)": {
+      "main": [
+        [
+          {
+            "node": "Send a text message (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an email (Fila Geral)": {
+      "main": [
+        [
+          {
+            "node": "Send a text message (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an email (Fila Geral)1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message (Normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a text message (Critica)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message (Normal)": {
+      "main": [
+        []
       ]
     }
   },
@@ -637,7 +787,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "b3c44efb-083e-4ea5-a6fe-26ee27ce9381",
+  "versionId": "95d308b4-12a9-4688-b74a-196e46326e8a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "6517e0c124deda5d86e33f210955cd223347cf2be14a6ba012adae077880cde7"
