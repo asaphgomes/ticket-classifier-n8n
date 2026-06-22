@@ -34,8 +34,8 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.5,
       "position": [
-        -32,
-        176
+        -48,
+        272
       ],
       "id": "64ab1a28-7fb0-4ee9-80d2-6ae9814cf210",
       "name": "On form submission",
@@ -43,13 +43,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const descricao = $input.first().json[\"Descrição do Problema\"];\nconst nome = $input.first().json[\"Nome\"];\nconst email = $input.first().json[\"Email\"];\nconst chave = \"YOUR_GROQ_API_KEY\";\nconst https = require('https');\n\nconst timestamp = Date.now();\nconst numeroTicket = \"TKT-\" + timestamp.toString().slice(-6);\n\ntry {\n  const bodyStr = JSON.stringify({\n    model: \"llama-3.3-70b-versatile\",\n    messages: [\n      { role: \"system\", content: \"Classifique o ticket e retorne APENAS JSON neste formato exato: {\\\"categoria\\\": \\\"Bug\\\", \\\"prioridade\\\": \\\"Alta\\\", \\\"sentimento\\\": \\\"Frustrado\\\", \\\"resumo\\\": \\\"frase curta\\\"}. Categorias: Bug, Duvida, Financeiro, Acesso, Outro. Prioridades: Baixa, Media, Alta, Critica. Sentimentos: Neutro, Frustrado, Satisfeito, Urgente.\" },\n      { role: \"user\", content: descricao }\n    ]\n  });\n\n  const data = await new Promise((resolve, reject) => {\n    const options = {\n      hostname: \"api.groq.com\",\n      path: \"/openai/v1/chat/completions\",\n      method: \"POST\",\n      headers: {\n        \"Content-Type\": \"application/json\",\n        \"Authorization\": \"Bearer \" + chave,\n        \"Content-Length\": Buffer.byteLength(bodyStr)\n      }\n    };\n    const req = https.request(options, (res) => {\n      let raw = \"\";\n      res.on(\"data\", (chunk) => { raw += chunk; });\n      res.on(\"end\", () => { resolve(JSON.parse(raw)); });\n    });\n    req.on(\"error\", reject);\n    req.write(bodyStr);\n    req.end();\n  });\n\n  const classificacao = JSON.parse(data.choices[0].message.content);\n\n  const tempoResposta = {\n  \"Critica\": \"1 hora\",\n  \"Alta\": \"4 horas\",\n  \"Media\": \"24 horas\",\n  \"Baixa\": \"72 horas\"\n};\n\nconst sla = tempoResposta[classificacao.prioridade] || \"48 horas\";\n  \n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: classificacao.categoria,\n    Prioridade: classificacao.prioridade,\n    Sentimento: classificacao.sentimento,\n    Resumo: classificacao.resumo,\n    Data: new Date().toISOString().split('T')[0],\n    SLA: sla,\n  }}];\n\n} catch (erro) {\n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: \"Não classificado\",\n    Prioridade: \"Média\",\n    Sentimento: \"Neutro\",\n    Resumo: \"Erro na classificação automática — revisar manualmente\",\n    Data: new Date().toISOString().split('T')[0],\n    SLA: sla, \n    Erro: erro.message\n  }}];\n}"
+        "jsCode": "const descricao = $input.first().json[\"Descrição do Problema\"];\nconst nome = $input.first().json[\"Nome\"];\nconst email = $input.first().json[\"Email\"];\nconst chave = \"YOUR_GROQ_API_KEY\";\nconst https = require('https');\n\nconst timestamp = Date.now();\nconst numeroTicket = \"TKT-\" + timestamp.toString().slice(-6);\n\ntry {\n  const bodyStr = JSON.stringify({\n    model: \"llama-3.3-70b-versatile\",\n    messages: [\n      { role: \"system\", content: \"Classifique o ticket e retorne APENAS JSON neste formato exato: {\\\"categoria\\\": \\\"Bug\\\", \\\"prioridade\\\": \\\"Alta\\\", \\\"sentimento\\\": \\\"Frustrado\\\", \\\"resumo\\\": \\\"frase curta\\\", \\\"confianca\\\": 0.95}. Categorias: Bug, Duvida, Financeiro, Acesso, Outro. Prioridades: Baixa, Media, Alta, Critica. Sentimentos: Neutro, Frustrado, Satisfeito, Urgente. Confianca: número de 0 a 1 indicando certeza da classificação.\" },\n      { role: \"user\", content: descricao }\n    ]\n  });\n\n  const inicio = Date.now();\n  const data = await new Promise((resolve, reject) => {\n    const options = {\n      hostname: \"api.groq.com\",\n      path: \"/openai/v1/chat/completions\",\n      method: \"POST\",\n      headers: {\n        \"Content-Type\": \"application/json\",\n        \"Authorization\": \"Bearer \" + chave,\n        \"Content-Length\": Buffer.byteLength(bodyStr)\n      }\n    };\n    const req = https.request(options, (res) => {\n      let raw = \"\";\n      res.on(\"data\", (chunk) => { raw += chunk; });\n      res.on(\"end\", () => { resolve(JSON.parse(raw)); });\n    });\n    req.on(\"error\", reject);\n    req.write(bodyStr);\n    req.end();\n  });\n  \n  const classificacao = JSON.parse(data.choices[0].message.content);\n  const tempoResposta_ms = Date.now() - inicio;\n  \n  const slaPorPrioridade = {\n  \"Critica\": \"1 hora\",\n  \"Alta\": \"4 horas\",\n  \"Media\": \"24 horas\",\n  \"Baixa\": \"72 horas\"\n};\n  \nconst sla = slaPorPrioridade[classificacao.prioridade] || \"48 horas\";\n  \n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: classificacao.categoria,\n    Prioridade: classificacao.prioridade,\n    Sentimento: classificacao.sentimento,\n    Resumo: classificacao.resumo,\n    Confianca: classificacao.confianca,\n    TempoResposta: tempoResposta_ms + \"ms\",\n    Data: new Date().toISOString().split('T')[0],\n    SLA: sla,\n  }}];\n\n} catch (erro) {\n  return [{ json: {\n    Nome: nome,\n    Email: email,\n    Ticket: numeroTicket,\n    Categoria: \"Não classificado\",\n    Prioridade: \"Media\",\n    Sentimento: \"Neutro\",\n    Resumo: \"Erro na classificação automática — revisar manualmente\",\n    Confianca: 0,\n    TempoResposta: \"erro\",\n    Data: new Date().toISOString().split('T')[0],\n    SLA: \"48 horas\",\n    Erro: erro.message\n  }}];\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        192,
-        176
+        176,
+        272
       ],
       "id": "9eca2019-d0a6-4b75-a526-112413312e26",
       "name": "Code in JavaScript"
@@ -180,8 +180,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        416,
-        176
+        400,
+        272
       ],
       "id": "96a1df11-329c-4d7d-8cde-2d5390b6d123",
       "name": "Create a record",
@@ -327,7 +327,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1536,
+        1744,
         128
       ],
       "id": "c9466618-08fe-49c7-a1c4-0fa3b75f9c3e",
@@ -346,7 +346,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1760,
+        1968,
         -16
       ],
       "id": "99cc1689-af0f-4275-88ee-b3b43104129c",
@@ -371,7 +371,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1760,
+        1968,
         176
       ],
       "id": "6070f3d9-0463-40d8-b437-929ba88f7add",
@@ -396,7 +396,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1760,
+        1968,
         368
       ],
       "id": "26b9f096-c733-4888-b60c-bc344b53842f",
@@ -421,7 +421,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1760,
+        1968,
         560
       ],
       "id": "74bd1d93-7696-4c78-ac42-d661f5dc1b09",
@@ -447,8 +447,8 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        864,
-        176
+        1168,
+        112
       ],
       "id": "ee654881-8246-41f1-91c0-d436914bf680",
       "name": "Send an email (Critico)",
@@ -487,7 +487,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        640,
+        848,
         176
       ],
       "id": "2756907f-d3c0-4298-b662-95c203801c17",
@@ -506,7 +506,7 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        1760,
+        1968,
         -208
       ],
       "id": "4aeaa8b2-a66d-4fc2-bf5d-fab46c0ed56c",
@@ -529,8 +529,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1312,
-        32
+        1520,
+        -64
       ],
       "id": "4134f729-4a02-4ec0-a4fb-1938ba32116f",
       "name": "Send a text message (Critica)",
@@ -553,8 +553,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1984,
-        224
+        2192,
+        128
       ],
       "id": "23c64ab2-515b-4024-8cdd-874c03b9c8c3",
       "name": "Send a text message (Normal)",
@@ -575,8 +575,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1088,
-        32
+        1296,
+        -64
       ],
       "id": "86a390c4-b178-46b0-b678-87cf837fd253",
       "name": "Merge"
@@ -595,8 +595,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        -32,
-        384
+        -48,
+        784
       ],
       "id": "1ede916d-22e6-4036-ba3f-df0e7cfcfa8b",
       "name": "Schedule Trigger"
@@ -624,8 +624,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        192,
-        384
+        176,
+        784
       ],
       "id": "57268fcb-5a3e-490b-bf19-713840f0b17a",
       "name": "Search records",
@@ -643,8 +643,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        416,
-        384
+        400,
+        784
       ],
       "id": "f53a16ff-3139-4597-9fd5-416687f78c67",
       "name": "Code in JavaScript1"
@@ -662,8 +662,8 @@
       "type": "n8n-nodes-base.sendGrid",
       "typeVersion": 1,
       "position": [
-        640,
-        384
+        624,
+        784
       ],
       "id": "e53dc0ee-2da7-40b6-832e-2fd86183e2ef",
       "name": "Send an email",
@@ -685,7 +685,7 @@
       "typeVersion": 1.2,
       "position": [
         -48,
-        784
+        1200
       ],
       "id": "826fb9ee-cb35-463f-9967-9d2f752ddf27",
       "name": "Telegram Trigger",
@@ -705,7 +705,7 @@
       "typeVersion": 2,
       "position": [
         176,
-        784
+        1200
       ],
       "id": "c9897217-02c2-4aec-9475-8b93dae2934b",
       "name": "Code in JavaScript2"
@@ -796,7 +796,7 @@
       "typeVersion": 3.4,
       "position": [
         400,
-        768
+        1184
       ],
       "id": "fa553078-c75b-41d8-b027-cef2655d6208",
       "name": "Switch1"
@@ -825,7 +825,7 @@
       "typeVersion": 2.2,
       "position": [
         624,
-        592
+        1008
       ],
       "id": "31b17364-10b8-47ed-a560-00eabb5ec02a",
       "name": "Search records1",
@@ -844,7 +844,7 @@
       "typeVersion": 2,
       "position": [
         848,
-        592
+        1008
       ],
       "id": "cb4ec71b-34d7-4485-bd25-f9b09d86ea68",
       "name": "Code in JavaScript (resposta)"
@@ -861,7 +861,7 @@
       "typeVersion": 1.2,
       "position": [
         1072,
-        592
+        1008
       ],
       "id": "71cbd5a4-d34e-4494-8a7c-59663eaf9c05",
       "name": "Send a text message",
@@ -885,7 +885,7 @@
       "typeVersion": 1.2,
       "position": [
         624,
-        784
+        1200
       ],
       "id": "8378283d-eaea-4bc9-9412-73884e4ed7ba",
       "name": "Send a text message1",
@@ -909,11 +909,89 @@
       "typeVersion": 1.2,
       "position": [
         624,
-        976
+        1392
       ],
       "id": "c40f219b-e621-47f2-b073-35e434f5c6c6",
       "name": "Send a text message2",
       "webhookId": "cb8049de-6c29-4f74-b33c-64f0a7a48dec",
+      "credentials": {
+        "telegramApi": {
+          "id": "pnLAq4lqAB78rfmf",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3ee490b2-c11f-44a9-bbbe-8da0d3130b50",
+              "leftValue": "={{ $json.fields.Confianca }}",
+              "rightValue": 0.7,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        272
+      ],
+      "id": "416a49fd-54d0-428b-93e8-e4605c8a558a",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ec13e5a4-3688-449c-9671-5381e320cca7",
+              "name": "status",
+              "value": "needs_review",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        368
+      ],
+      "id": "b5223382-1083-4ac6-8d45-1a4f74828908",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "-5028215417",
+        "text": "=⚠️ *Ticket para revisão manual* ━━━━━━━━━━━━━━━ 🎫 {{ $('Create a record').first().json.fields.Ticket }} 👤 {{ $('Create a record').first().json.fields.Nome }} 📝 {{ $('Create a record').first().json.fields.Resumo }} 🤖 Confiança da IA: {{ $('Create a record').first().json.fields.Confianca }} ━━━━━━━━━━━━━━━ A classificação automática ficou abaixo de 70% de confiança. Requer análise humana antes de prosseguir.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1056,
+        368
+      ],
+      "id": "aa7bd2a9-b862-4be5-aa69-3756e1a88064",
+      "name": "Send a text message3",
+      "webhookId": "f3accf6d-dd9c-4678-90e2-8802481e4e49",
       "credentials": {
         "telegramApi": {
           "id": "pnLAq4lqAB78rfmf",
@@ -950,7 +1028,7 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -1222,6 +1300,35 @@
           }
         ]
       ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1229,7 +1336,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "f2265c0b-5264-48d7-a0ee-6a795d49a08f",
+  "versionId": "e631a338-4789-4994-a3a4-15c16a2f77bc",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "6517e0c124deda5d86e33f210955cd223347cf2be14a6ba012adae077880cde7"
