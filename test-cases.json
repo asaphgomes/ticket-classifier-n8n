@@ -1,0 +1,132 @@
+[
+  {
+    "input": {
+      "Nome": "Carlos Silva",
+      "Email": "carlos@teste.com",
+      "Descrição do Problema": "O sistema caiu completamente, nenhum usuário consegue acessar"
+    },
+    "expected": {
+      "Categoria": "Bug",
+      "Prioridade": "Critica",
+      "Sentimento": "Urgente",
+      "SLA": "1 hora"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Ana Lima",
+      "Email": "ana@teste.com",
+      "Descrição do Problema": "Gostaria de saber como emitir boleto para pagamento"
+    },
+    "expected": {
+      "Categoria": "Financeiro",
+      "Prioridade": "Baixa",
+      "Sentimento": "Neutro",
+      "SLA": "72 horas"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Pedro Santos",
+      "Email": "pedro@teste.com",
+      "Descrição do Problema": "Não consigo fazer login, minha senha não funciona mais"
+    },
+    "expected": {
+      "Categoria": "Acesso",
+      "Prioridade": "Alta",
+      "Sentimento": "Frustrado",
+      "SLA": "4 horas"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Julia Costa",
+      "Email": "julia@teste.com",
+      "Descrição do Problema": "ontem choveu bastante, mas também pensei em pizza, e talvez o sistema esteja lento ou não, difícil saber"
+    },
+    "expected": {
+      "Categoria": "Não classificado",
+      "Prioridade": "Media",
+      "Confianca": "< 0.7",
+      "Status": "needs_review"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Roberto Alves",
+      "Email": "roberto@teste.com",
+      "Descrição do Problema": "O botão de salvar na tela de cadastro não está funcionando no Chrome"
+    },
+    "expected": {
+      "Categoria": "Bug",
+      "Prioridade": "Media",
+      "Sentimento": "Frustrado",
+      "SLA": "24 horas"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Mariana Ferreira",
+      "Email": "mariana@teste.com",
+      "Descrição do Problema": "Quero cancelar minha assinatura e solicitar reembolso dos últimos 3 meses"
+    },
+    "expected": {
+      "Categoria": "Financeiro",
+      "Prioridade": "Alta",
+      "Sentimento": "Frustrado",
+      "SLA": "4 horas"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Fernando Gomes",
+      "Email": "fernando@teste.com",
+      "Descrição do Problema": "Como faço para exportar meus dados em CSV?"
+    },
+    "expected": {
+      "Categoria": "Duvida",
+      "Prioridade": "Baixa",
+      "Sentimento": "Neutro",
+      "SLA": "72 horas"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Beatriz Rocha",
+      "Email": "beatriz@teste.com",
+      "Descrição do Problema": "URGENTE! Dados de clientes aparecendo para usuários errados, possível vazamento!"
+    },
+    "expected": {
+      "Categoria": "Bug",
+      "Prioridade": "Critica",
+      "Sentimento": "Urgente",
+      "SLA": "1 hora"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Lucas Mendes",
+      "Email": "lucas@teste.com",
+      "Descrição do Problema": "O sistema está um pouco mais lento que o normal hoje de manhã"
+    },
+    "expected": {
+      "Categoria": "Bug",
+      "Prioridade": "Baixa",
+      "Sentimento": "Neutro",
+      "SLA": "72 horas"
+    }
+  },
+  {
+    "input": {
+      "Nome": "Camila Torres",
+      "Email": "camila@teste.com",
+      "Descrição do Problema": "Parabéns pelo sistema, está funcionando muito bem!"
+    },
+    "expected": {
+      "Categoria": "Outro",
+      "Prioridade": "Baixa",
+      "Sentimento": "Satisfeito",
+      "SLA": "72 horas"
+    }
+  }
+]
